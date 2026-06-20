@@ -3,30 +3,29 @@ from .models import GalleryAlbum, GalleryImage
 from .serializers import GalleryAlbumSerializer, GalleryImageSerializer
 from accounts.permissions import IsAdminOrReadOnly
 
-
 class GalleryAlbumViewSet(viewsets.ModelViewSet):
-    """Public read, admin write. ?year=2024 to filter albums."""
-    queryset = GalleryAlbum.objects.all().order_by('-year')
-    serializer_class = GalleryAlbumSerializer
+    serializer_class   = GalleryAlbumSerializer
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs   = GalleryAlbum.objects.all().prefetch_related('images').order_by('-year', '-id')
         year = self.request.query_params.get('year')
+        search = self.request.query_params.get('search')
         if year:
             qs = qs.filter(year=year)
+        if search:
+            qs = qs.filter(title__icontains=search)
         return qs
 
-
 class GalleryImageViewSet(viewsets.ModelViewSet):
-    """Upload/delete images. ?album=<id> to filter."""
-    queryset = GalleryImage.objects.all().order_by('-uploaded_at')
-    serializer_class = GalleryImageSerializer
+    serializer_class   = GalleryImageSerializer
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs       = GalleryImage.objects.select_related('album').all().order_by('-uploaded_at')
         album_id = self.request.query_params.get('album')
         if album_id:
             qs = qs.filter(album_id=album_id)
         return qs
+    
+    
