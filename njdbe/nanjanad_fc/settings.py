@@ -118,7 +118,7 @@ SIMPLE_JWT = {
 
 # CORS - allow React dev server (open for development)
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = ["https://nanjanad-fc-frontend.vercel.app",
+CORS_ALLOWED_ORIGINS = ["https://nanjand-fc-5bz5-7l1z0ovox-rb398573-4724s-projects.vercel.app",
                         ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
